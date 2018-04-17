@@ -18,13 +18,13 @@
 
     <ImageButton
         android:id="@+id/imageButtonHome"
-        android:layout_width="59dp"
-        android:layout_height="60dp"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentTop="true"
+        android:layout_width="47dp"
+        android:layout_height="44dp"
+        android:layout_alignTop="@+id/textViewThreadTitle"
+        android:layout_toEndOf="@+id/textViewThreadTitle"
         android:background="@null"
         android:scaleType="fitXY"
-        android:tint="@android:color/black"
+        android:tint="@color/colorAccent"
         app:srcCompat="@drawable/ic_home" />
 
     <EditText
@@ -46,8 +46,8 @@
         android:layout_toEndOf="@+id/textViewThreadTitle"
         android:background="@null"
         android:scaleType="fitXY"
-        android:tint="@android:color/black"
-        app:srcCompat="@android:drawable/ic_menu_send" />
+        android:tint="@color/colorAccent"
+        app:srcCompat="@drawable/ic_send" />
 
     <ListView
         android:id="@+id/listVIewMessages"

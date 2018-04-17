@@ -23,29 +23,27 @@
         android:id="@+id/editTextLastName"
         android:layout_width="298dp"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
+        android:layout_below="@+id/editTextFirstName"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="91dp"
         android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ "
         android:ems="10"
         android:hint="@string/lname"
         android:inputType="textPersonName"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
-        android:textColorHint="@android:color/darker_gray"/>
+        android:textColorHint="@android:color/darker_gray" />
 
     <EditText
         android:id="@+id/editTextEmail2"
         android:layout_width="299dp"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
+        android:layout_below="@+id/editTextLastName"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="155dp"
         android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@._"
         android:ems="10"
         android:hint="@string/hintEmail"
         android:inputType="textEmailAddress"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
-        android:textColorHint="@android:color/darker_gray"/>
+        android:textColorHint="@android:color/darker_gray" />
 
     <EditText
         android:id="@+id/editTextPass1"
@@ -53,25 +51,24 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="183dp"
+        android:layout_marginBottom="219dp"
         android:ems="10"
         android:hint="@string/choosePass"
         android:inputType="textPassword"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
-        android:textColorHint="@android:color/darker_gray"/>
+        android:textColorHint="@android:color/darker_gray" />
 
     <EditText
         android:id="@+id/editTextPass2"
         android:layout_width="299dp"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
+        android:layout_below="@+id/editTextEmail2"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="216dp"
         android:ems="10"
         android:hint="@string/retypePass"
         android:inputType="textPassword"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
-        android:textColorHint="@android:color/darker_gray"/>
+        android:textColorHint="@android:color/darker_gray" />
 
     <Button
         android:id="@+id/buttonCancel"

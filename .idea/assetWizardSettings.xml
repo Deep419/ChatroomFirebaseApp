@@ -19,8 +19,8 @@
                                   <option name="values">
                                     <map>
                                       <entry key="assetType" value="IMAGE" />
-                                      <entry key="imageAsset" value="D:\Programming\AndroidStudioProjects\5180\Support_Files_InClass12\Support_Files_InClass12\images\ic_logout.png" />
-                                      <entry key="outputName" value="ic_logout" />
+                                      <entry key="imageAsset" value="$USER_HOME$/Downloads/if_send_1608828.png" />
+                                      <entry key="outputName" value="ic_send" />
                                       <entry key="theme" value="CUSTOM" />
                                       <entry key="themeColor" value="000000" />
                                     </map>

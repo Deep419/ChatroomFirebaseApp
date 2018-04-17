@@ -47,7 +47,7 @@
         android:layout_toEndOf="@+id/textViewFullName"
         android:background="@null"
         android:scaleType="fitXY"
-        android:tint="@color/colorPrimary"
+        android:tint="@color/colorAccent"
         app:srcCompat="@drawable/ic_add" />
 
     <TextView
