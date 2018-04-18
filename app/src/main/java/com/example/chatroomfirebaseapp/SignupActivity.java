@@ -1,5 +1,6 @@
 package com.example.chatroomfirebaseapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -8,8 +9,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 public class SignupActivity extends AppCompatActivity {
 
+    private DatabaseReference mDatabase;
     private String TAG = "Signup";
     private EditText fname, lname, email, pass, retypePass;
     private Button cancel, signup;
@@ -28,11 +33,13 @@ public class SignupActivity extends AppCompatActivity {
         cancel = findViewById(R.id.buttonCancel);
         signup = findViewById(R.id.buttonSignUp2);
 
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Intent intent = new Intent(SignUpActivity.this, MainActivity.class);
-                //startActivity(intent);
+                Intent intent = new Intent(SignupActivity.this, LoginActivity.class);
+                startActivity(intent);
                 finish();
             }
         });
@@ -74,10 +81,13 @@ public class SignupActivity extends AppCompatActivity {
                     return;
                 }
                 Log.d(TAG, "Performing Sign Up");
-                //performSignUp(sFName, sLName, sEmail, sPass);
+                performSignUp(String.valueOf(1), sFName, sLName, sEmail, sPass);
             }
         });
+    }
 
-
+    private void performSignUp(String id, String sFName, String sLName, String sEmail, String sPass) {
+        Users user = new Users(id, sEmail, sPass, sFName, sLName);
+        mDatabase.child("users").child(id).setValue(user);
     }
 }
