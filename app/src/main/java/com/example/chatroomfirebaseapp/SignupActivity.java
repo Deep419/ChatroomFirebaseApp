@@ -2,6 +2,7 @@ package com.example.chatroomfirebaseapp;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -9,13 +10,19 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 public class SignupActivity extends AppCompatActivity {
 
     private DatabaseReference mDatabase;
-    private String TAG = "Signup";
+    private FirebaseAuth mAuth;
+    private String TAG = "signup";
     private EditText fname, lname, email, pass, retypePass;
     private Button cancel, signup;
     private String sFName,sLName,sEmail,sPass,sRetype;
@@ -34,6 +41,7 @@ public class SignupActivity extends AppCompatActivity {
         signup = findViewById(R.id.buttonSignUp2);
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
+        mAuth = FirebaseAuth.getInstance();
 
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -81,13 +89,38 @@ public class SignupActivity extends AppCompatActivity {
                     return;
                 }
                 Log.d(TAG, "Performing Sign Up");
-                performSignUp(String.valueOf(1), sFName, sLName, sEmail, sPass);
+                performSignUp(sFName, sLName, sEmail, sPass);
             }
         });
     }
 
-    private void performSignUp(String id, String sFName, String sLName, String sEmail, String sPass) {
-        Users user = new Users(id, sEmail, sPass, sFName, sLName);
-        mDatabase.child("users").child(id).setValue(user);
+    private void performSignUp(final String sFName, final String sLName, final String sEmail, final String sPass) {
+        mAuth.createUserWithEmailAndPassword(sEmail,sPass)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            Log.d(TAG, "onComplete: SignUp success");
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            Users new_user = new Users(user.getUid(), sEmail, sPass, sFName, sLName);
+                            mDatabase.child("users").child(user.getUid()).setValue(new_user);
+                            Toast.makeText(SignupActivity.this, "User Signup successful!", Toast.LENGTH_LONG).show();
+                            try {
+                                Thread.sleep(2000);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            } finally {
+                                Intent intent = new Intent(SignupActivity.this, ThreadlistActivity.class);
+                                intent.putExtra("USER",user);
+                                startActivity(intent);
+                                finish();
+                            }
+
+                        } else {
+                            Log.d(TAG, "onComplete: Signup failure " + task.getException());
+                            Toast.makeText(SignupActivity.this, "Authentication Failed", Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
     }
 }
