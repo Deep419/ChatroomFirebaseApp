@@ -12,14 +12,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 public class ThreadlistActivity extends AppCompatActivity {
@@ -59,28 +61,27 @@ public class ThreadlistActivity extends AppCompatActivity {
             name.setText(current_user.getFname() + " " + current_user.getLname());
         }
 
+        mThreadReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                addThread(dataSnapshot);
+                THREAD_ID_COUNTER = mThreadsList.size();
+                Log.d(TAG, "Parsed Threads");
+                Log.d(TAG, "Thread_id_ctr = "+ THREAD_ID_COUNTER);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
 
         mThreadReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Log.d("ctr", "1 ");
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    int size = (int)snapshot.getChildrenCount();
-                    if (size == 0) { return; }
-                    String  [] params = new String[size];
-                    Log.d(TAG, "onDataChange: " + size);
-                    int i = 0;
-                    for (DataSnapshot snapshot1 : snapshot.getChildren()) {
-                        //Log.d(TAG, "onDataChange: "+ snapshot1.toString());
-                        params[i] = snapshot1.getValue(String.class);
-                        i++;
-                    }
-                    Threads threads = new Threads(params[0],params[1],params[2],params[3],params[4],params[5]);
-                    Log.d(TAG, threads.toString());
-                    mThreadsList.add(threads);
-                }
-                THREAD_ID_COUNTER = mThreadsList.size();
-                Log.d(TAG, "ThreadListSize = " + mThreadsList.size() + " Thread_id_ctr = "+ THREAD_ID_COUNTER);
+                //addThread(dataSnapshot);
+                Log.d(TAG, "Thread_id_ctr = "+ THREAD_ID_COUNTER);
             }
 
             @Override
@@ -102,24 +103,45 @@ public class ThreadlistActivity extends AppCompatActivity {
         addNewThreadButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String addThread = addNewThreadText.getText().toString();
-                if(addThread.equals("")) {
+                String addThreadText = addNewThreadText.getText().toString();
+                if(addThreadText.equals("")) {
                     Toast.makeText(ThreadlistActivity.this,"Enter Thread Name!",Toast.LENGTH_LONG).show();
                     return;
                 }
                 Log.d("ctr", "2 ");
-                THREAD_ID_COUNTER = mThreadsList.size();
-                Log.d(TAG, "onClick: ThreadCOUNTEr " + THREAD_ID_COUNTER + " " + mThreadsList.size());
+                DateFormat df = new SimpleDateFormat("dd MM yyyy, HH:mm");
+                String date = df.format(Calendar.getInstance().getTime());
 
-
-                Threads threads = new Threads("3/2/12",String.valueOf(THREAD_ID_COUNTER),
-                        addThread, current_user.fname, current_user.userID, current_user.lname);
+                Log.d(TAG, "onClick: THREADCOUNTER " + THREAD_ID_COUNTER + " " + mThreadsList.size());
+                Threads threads = new Threads(date,String.valueOf(THREAD_ID_COUNTER),
+                        addThreadText, current_user.fname, current_user.userID, current_user.lname);
                 mThreadReference.child(String.valueOf(THREAD_ID_COUNTER)).setValue(threads);
+                mThreadsList.add(threads);
+                THREAD_ID_COUNTER = THREAD_ID_COUNTER + 1;
                 //threadsListView.setAdapter(adapter);
-                Log.d(TAG, "onClick: getThread size Notify");
+                Log.d(TAG, "Thread Size : " + mThreadsList.size());
             }
         });
 
 
+    }
+
+    public void addThread(DataSnapshot dataSnapshot) {
+        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+            int size = (int)snapshot.getChildrenCount();
+            if (size == 0) { return; }
+            String  [] params = new String[size];
+            //Log.d(TAG, "onDataChange: " + size);
+            int i = 0;
+            for (DataSnapshot snapshot1 : snapshot.getChildren()) {
+                //Log.d(TAG, "onDataChange: "+ snapshot1.toString());
+                params[i] = snapshot1.getValue(String.class);
+                i++;
+            }
+            Threads threads = new Threads(params[0],params[1],params[2],params[3],params[4],params[5]);
+            //Log.d(TAG, threads.toString());
+            mThreadsList.add(threads);
+            Log.d(TAG, "Thread Size : " + mThreadsList.size());
+        }
     }
 }
