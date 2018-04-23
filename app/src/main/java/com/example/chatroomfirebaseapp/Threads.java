@@ -2,8 +2,10 @@ package com.example.chatroomfirebaseapp;
 
 import com.google.firebase.database.IgnoreExtraProperties;
 
+import java.io.Serializable;
+
 @IgnoreExtraProperties
-public class Threads {
+public class Threads implements Serializable {
     public String created_at, id, title, user_fname, user_id, user_lname;
 
     public Threads() {

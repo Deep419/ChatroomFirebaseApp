@@ -1,6 +1,7 @@
 package com.example.chatroomfirebaseapp;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -15,13 +16,17 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class SignupActivity extends AppCompatActivity {
 
     private DatabaseReference mDatabase;
     private FirebaseAuth mAuth;
+
     private String TAG = "signup";
     private EditText fname, lname, email, pass, retypePass;
     private Button cancel, signup;
@@ -42,6 +47,7 @@ public class SignupActivity extends AppCompatActivity {
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
         mAuth = FirebaseAuth.getInstance();
+
 
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -95,7 +101,7 @@ public class SignupActivity extends AppCompatActivity {
     }
 
     private void performSignUp(final String sFName, final String sLName, final String sEmail, final String sPass) {
-        mAuth.createUserWithEmailAndPassword(sEmail,sPass)
+        mAuth.createUserWithEmailAndPassword(sEmail, sPass)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
@@ -103,18 +109,14 @@ public class SignupActivity extends AppCompatActivity {
                             Log.d(TAG, "onComplete: SignUp success");
                             FirebaseUser user = mAuth.getCurrentUser();
                             Users new_user = new Users(user.getUid(), sEmail, sPass, sFName, sLName);
+                            setPref(user.getUid(), sFName + " " + sLName);
                             mDatabase.child("users").child(user.getUid()).setValue(new_user);
                             Toast.makeText(SignupActivity.this, "User Signup successful!", Toast.LENGTH_LONG).show();
-                            try {
-                                Thread.sleep(2000);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            } finally {
-                                Intent intent = new Intent(SignupActivity.this, ThreadlistActivity.class);
-                                intent.putExtra("USER",user);
-                                startActivity(intent);
-                                finish();
-                            }
+                            Intent intent = new Intent(SignupActivity.this, ThreadlistActivity.class);
+                            intent.putExtra("USER", new_user);
+                            startActivity(intent);
+                            finish();
+
 
                         } else {
                             Log.d(TAG, "onComplete: Signup failure " + task.getException());
@@ -122,5 +124,15 @@ public class SignupActivity extends AppCompatActivity {
                         }
                     }
                 });
+    }
+
+    public void setPref(String uID, String name){
+        SharedPreferences sharedPreferences = getApplicationContext()
+                .getSharedPreferences(getString(R.string.preference_file_key),
+                        MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("userID", uID);
+        editor.putString("name", name);
+        editor.commit();
     }
 }

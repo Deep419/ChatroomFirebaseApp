@@ -5,30 +5,40 @@ import com.google.firebase.database.IgnoreExtraProperties;
 @IgnoreExtraProperties
 public class Messages {
 
-    public String user_fname, user_lname, user_id, id, message, created_at;
+    public String created_at, id, message,thread_id, user_fname, user_id, user_lname;
 
     public Messages() {
     }
 
-    public Messages(String user_fname, String user_lname, String user_id, String id, String message, String created_at) {
-        this.user_fname = user_fname;
-        this.user_lname = user_lname;
-        this.user_id = user_id;
+    public Messages(String created_at, String id, String message, String thread_id, String user_fname, String user_id, String user_lname) {
+        this.created_at = created_at;
         this.id = id;
         this.message = message;
-        this.created_at = created_at;
+        this.thread_id = thread_id;
+        this.user_fname = user_fname;
+        this.user_id = user_id;
+        this.user_lname = user_lname;
     }
 
     @Override
     public String toString() {
         return "Messages{" +
-                "user_fname='" + user_fname + '\'' +
-                ", user_lname='" + user_lname + '\'' +
-                ", user_id='" + user_id + '\'' +
+                "created_at='" + created_at + '\'' +
                 ", id='" + id + '\'' +
                 ", message='" + message + '\'' +
-                ", created_at='" + created_at + '\'' +
+                ", thread_id='" + thread_id + '\'' +
+                ", user_fname='" + user_fname + '\'' +
+                ", user_id='" + user_id + '\'' +
+                ", user_lname='" + user_lname + '\'' +
                 '}';
+    }
+
+    public String getThread_id() {
+        return thread_id;
+    }
+
+    public void setThread_id(String thread_id) {
+        this.thread_id = thread_id;
     }
 
     public String getUser_fname() {

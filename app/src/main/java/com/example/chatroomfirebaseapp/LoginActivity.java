@@ -1,6 +1,7 @@
 package com.example.chatroomfirebaseapp;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -33,6 +34,9 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        removeCurrentUserID();
+
         setContentView(R.layout.activity_login);
 
         email = findViewById(R.id.editTextEmail);
@@ -54,13 +58,14 @@ public class LoginActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             Log.d(TAG, "on login successful ");
-                            FirebaseUser user = mAuth.getCurrentUser();
+                            final FirebaseUser user = mAuth.getCurrentUser();
                             final Intent intent = new Intent(LoginActivity.this, ThreadlistActivity.class);
                             mDatabase.child("users").child(user.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
                                     Users users = dataSnapshot.getValue(Users.class);
                                     intent.putExtra("USER",users);
+                                    setPref(user.getUid(), users.fname + " " + users.lname);
                                     startActivity(intent);
                                     finish();
                                 }
@@ -87,11 +92,27 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
     }
+    public void setPref(String uID, String name){
+        SharedPreferences sharedPreferences = getApplicationContext()
+                .getSharedPreferences(getString(R.string.preference_file_key),
+                        MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("userID", uID);
+        editor.putString("name", name);
+        editor.commit();
+    }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
+    public String getPref(){
+        SharedPreferences sharedPreferences = getApplicationContext()
+                .getSharedPreferences(getString(R.string.preference_file_key),
+                        MODE_PRIVATE);
+        return sharedPreferences.getString("userID","");
+    }
 
-
+    public void removeCurrentUserID(){
+        SharedPreferences sharedPreferences = getApplicationContext()
+                .getSharedPreferences(getString(R.string.preference_file_key),
+                        MODE_PRIVATE);
+        sharedPreferences.edit().clear().commit();
     }
 }
